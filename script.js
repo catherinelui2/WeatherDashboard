@@ -1,24 +1,55 @@
 //search bar to pull weather forecast from API
-const APIKey = "169cda39df4fc06ddd2b2e7fd2a06986";
-let cityName = "Lakewood";
-let state = "Denver";
+const APIKey = "166a433c57516f51dfab1f7edaed8413";
+let cityName = "";
+let state = "";
 const searchBtn = $("#searchBtn");
-var queryURL = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName},${state}&appid=${APIKey}`;
+let cities = [];
 
-searchBtn.click(function() {
+function geoInfoCall() {
+    let queryURL = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName},${state}&appid=${APIKey}`;
+
     $.ajax({
         url: queryURL,
         method: "GET",
     }).then(function (response) {
+        let infoDiv = $("<div class='infoDiv'>");
+        let pCity = $("<p>").text(`Location: ${cityName}, ${state}`);
+        infoDiv.append(pCity);
+
+        let lat = response.city.coord.lat;
+        let pLat = $("<p>").text(lat);
+        let lon = reponse.city.coord.lon;
+        let pLon = $("<p>").text(lon);
+        pCity.append(`${pLat}, ${pLon}`);
+    
+
             // Log the resulting object
             console.log(response);
-            //results display in currentweather div with city name, date, icon of weather cond, temp, humidity, wind spped, UV index
 
-            //display 5 days forecast for current city in fiveDayForecast
-
-
+    
     });
 }
+
+geoInfoCall();
+
+function uvIndexCall() {
+    let queryURL =`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&
+    exclude=currnet&appid=${APIKey}`;
+    //results display in currentweather div with city name, date, icon of weather cond, temp, humidity, wind spped, UV index
+
+    //display 5 days forecast for current city in fiveDayForecast
+
+    
+}
+
+
+searchBtn.on("click", function() {
+
+    let city = $("#cityInput").val().trim();
+    cities.push(city);
+
+    renderbtn(); 
+});
 
 
 //render search results - current and future conditions and add to history on the left panel
