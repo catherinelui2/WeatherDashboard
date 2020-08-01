@@ -13,7 +13,8 @@
         />
     </head>
     <body>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
         <script rel="javascript" type="text/javascript" src="script.js"></script>
         <div class="row">
             <div id="titleBanner" class="col-md-12">
@@ -32,15 +33,28 @@
                             aria-label="Search"
                         />
                         <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" type="submit">
-                            Search
+                            Search by City
                         </button>
                     </form>
                 </nav>
+                <div class="cityList">
+                    <ul class ="list-group">
+                        <li class="list-group-item"><p class="card-body">test</p></li>
+
+                    </ul>
+                </div>
             </div>
             <div class="col-md-8">
-                <div id="currentWeather" class="col-md-8"></div>
-                <div id="fiveDayForecast" class="col-md-8"></div>
+                <div id="currentWeather" class="card bg-light mb-3" style="max-width: 18rem;" class="col-md-8">
+                    <div class="card-body"></div>
+                </div>
+                <div id="fiveDayForecast" class="card text-white bg-dark mb-3" style="max-width: 18rem;" class="col-md-8">
+                    <div class="card-body" >
+
+                    </div>
+                </div>
             </div>
         </div>
+        
     </body>
 </html>
