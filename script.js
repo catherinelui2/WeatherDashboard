@@ -2,6 +2,7 @@
 const APIKey = "166a433c57516f51dfab1f7edaed8413";
 let cityName = "";
 let cities = [];
+const divTag = $("<div>");
 const currentDateTime = moment().format("MMM Do YYYY");
 const forecast1 = moment().add(1, 'days').format("MMM Do YYYY");
 const forecast2 = moment().add(2, 'days').format("MMM Do YYYY");
@@ -60,6 +61,7 @@ function oneCall(lat, lon) {
         let currentUVI = $("<p>").addClass("card-text").text(`UV Index: ${response.current.uvi}`);
 
         //forecastOne
+
     
         $("#currentWeather .card-body").append(currentDateTime, current, currentHumidity, currentWind, currentUVI);
 
@@ -69,17 +71,49 @@ function oneCall(lat, lon) {
 
         let forecastOneHumidity = $("<p>").addClass("card-text").text(`Humidity: ${response.daily[0].humidity}`);
 
-        $("#fiveDayForecast .card-body").append(forecastOne, forecastOneWeather, forecastOneHumidity);
+        $("#oneDayForecast .card-body").append(forecastOne, forecastOneWeather, forecastOneHumidity);
 
         //forecastTwo
-        
+
         let forecastTwo = $("<h3>").addClass("card-title").text(forecast2);
         
         let forecastTwoWeather = $("<p>").addClass("card-text").text(`Temp: ${response.daily[1].temp.day}°F`);
 
         let forecastTwoHumidity = $("<p>").addClass("card-text").text(`Humidity: ${response.daily[1].humidity}`);
 
-        $("#fiveDayForecast .card-body").append(forecastTwo, forecastTwoWeather, forecastTwoHumidity);
+        $("#twoDayForecast .card-body").append(forecastTwo, forecastTwoWeather, forecastTwoHumidity);
+
+        //forecastThree
+
+        let forecastThree = $("<h3>").addClass("card-title").text(forecast3);
+        
+        let forecastThreeWeather = $("<p>").addClass("card-text").text(`Temp: ${response.daily[2].temp.day}°F`);
+
+        let forecastThreeHumidity = $("<p>").addClass("card-text").text(`Humidity: ${response.daily[2].humidity}`);
+
+        $("#threeDayForecast .card-body").append(forecastThree, forecastThreeWeather, forecastThreeHumidity);
+
+        //forecastFour
+
+        let forecastFour = $("<h3>").addClass("card-title").text(forecast4);
+        
+        let forecastFourWeather = $("<p>").addClass("card-text").text(`Temp: ${response.daily[3].temp.day}°F`);
+
+        let forecastFourHumidity = $("<p>").addClass("card-text").text(`Humidity: ${response.daily[3].humidity}`);
+
+        $("#fourDayForecast .card-body").append(forecastFour, forecastFourWeather, forecastFourHumidity);
+
+        //Forecast Five
+
+        let forecastFive = $("<h3>").addClass("card-title").text(forecast5);
+        
+        let forecastFiveWeather = $("<p>").addClass("card-text").text(`Temp: ${response.daily[4].temp.day}°F`);
+
+        let forecastFiveHumidity = $("<p>").addClass("card-text").text(`Humidity: ${response.daily[4].humidity}`);
+
+        $("#fiveDayForecast .card-body").append(forecastFive, forecastFiveWeather, forecastFiveHumidity);
+
+
 
 
 
