@@ -1,6 +1,5 @@
 //search bar to pull weather forecast from API
 const APIKey = "166a433c57516f51dfab1f7edaed8413";
-let cityName = "";
 let cities = [];
 const savedCityStorageKey = "savedCities";
 let savedCities = JSON.parse(localStorage.getItem(savedCityStorageKey)) || [];
@@ -8,7 +7,6 @@ let savedCities = JSON.parse(localStorage.getItem(savedCityStorageKey)) || [];
 const updateStorage = () => {
     localStorage.setItem(savedCityStorageKey, JSON.stringify(savedCities));
 };
-
 
 const currentDateTime = moment().format("MMM Do YYYY");
 const forecast1 = moment().add(1, 'days').format("MMM Do");
@@ -25,35 +23,31 @@ $("document").ready(function () {
     });
 });
 
-function renderCityList(cityName) {
+function renderCityList() {
+    const $cityList = $("#cityList .list-group");
+    $cityList.empty();
     for (let i = 0; i < cities.length; i++) {
-        let liCity = $("<li>").addClass("card-text").text(cities[i]);
-        if (cities.indexOf(cityName) == -1){
-            $("#cityList .card-body").append(liCity);
-        }
-        
-        
+        let citybtn = $("<li>").addClass("btn btn-light border").text(cities[i]);
+        citybtn.on("click", function (e) {
+            e.preventDefault();
+            geoInfoCall(cities[i]);
+        });
+        $cityList.append(citybtn);
         
     }
 }
 
 function geoInfoCall(city) {
+    $("#cityInput").val("");
+    $("#errors").empty();
     $("#currentWeather .card-body").empty();
     $("#oneDayForecast .card-body").empty();
     $("#twoDayForecast .card-body").empty();
     $("#threeDayForecast .card-body").empty();
     $("#fourDayForecast .card-body").empty();
     $("#fiveDayForecast .card-body").empty();
-
-
-        cities.push(city);
-        cityName = city;
-        savedCities = cities;
-
-        updateStorage();
-        renderCityList();
     
-    let queryURL = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${APIKey}`;
+    let queryURL = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${APIKey}`;
 
     $.ajax({
         url: queryURL,
@@ -63,9 +57,20 @@ function geoInfoCall(city) {
         let lon = response.city.coord.lon;
         let h3 = $('<h3>').addClass('card-title').text(city);        
         $("#currentWeather .card-body").append(h3);
+        let cityName = response.city.name;
+        if (!cities.includes(cityName)) {
+            cities.push(cityName);
+            savedCities = cities;
+            updateStorage();
+        }
         
-    oneCall(lat,lon);
-});
+        renderCityList();
+        oneCall(lat,lon);
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        let errorAlert = $("<div>").addClass("alert alert-danger").text(jqXHR.responseJSON.message);
+
+        $("#errors").append(errorAlert);
+    });
 }
 
 function oneCall(lat, lon) {
