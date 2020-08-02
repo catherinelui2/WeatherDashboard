@@ -2,6 +2,14 @@
 const APIKey = "166a433c57516f51dfab1f7edaed8413";
 let cityName = "";
 let cities = [];
+const savedCityStorageKey = "savedCities";
+let savedCities = JSON.parse(localStorage.getItem(savedCityStorageKey)) || [];
+
+const updateStorage = () => {
+    localStorage.setItem(savedCityStorageKey, JSON.stringify(savedCities));
+};
+
+
 const currentDateTime = moment().format("MMM Do YYYY");
 const forecast1 = moment().add(1, 'days').format("MMM Do");
 const forecast2 = moment().add(2, 'days').format("MMM Do");
@@ -13,16 +21,38 @@ $("document").ready(function () {
     $("#searchBtn").on("click", function (e) {
         e.preventDefault();
         let city = $("#cityInput").val();
-        
         geoInfoCall(city);
     });
 });
 
+function renderCityList(cityName) {
+    for (let i = 0; i < cities.length; i++) {
+        let liCity = $("<li>").addClass("card-text").text(cities[i]);
+        if (cities.indexOf(cityName) == -1){
+            $("#cityList .card-body").append(liCity);
+        }
+        
+        
+        
+    }
+}
 
 function geoInfoCall(city) {
-    cities.push(city);
-    cityName = city;
+    $("#currentWeather .card-body").empty();
+    $("#oneDayForecast .card-body").empty();
+    $("#twoDayForecast .card-body").empty();
+    $("#threeDayForecast .card-body").empty();
+    $("#fourDayForecast .card-body").empty();
+    $("#fiveDayForecast .card-body").empty();
 
+
+        cities.push(city);
+        cityName = city;
+        savedCities = cities;
+
+        updateStorage();
+        renderCityList();
+    
     let queryURL = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${APIKey}`;
 
     $.ajax({
@@ -35,7 +65,6 @@ function geoInfoCall(city) {
         $("#currentWeather .card-body").append(h3);
         
     oneCall(lat,lon);
-        
 });
 }
 
@@ -47,7 +76,6 @@ function oneCall(lat, lon) {
         url: queryURL,
         method: "GET",
     }).then(function(response) {
-        console.log(response);
 
         let current = $("<p>").addClass("card-text").text(`Current Weather: ${response.current.temp}°F`);
 
@@ -59,9 +87,21 @@ function oneCall(lat, lon) {
 
         let currentWind = $("<p>").addClass("card-text").text(`Wind Speed: ${response.current.wind_speed}`);
 
-        let currentUVI = $("<p>").addClass("card-text").text(`UV Index: ${response.current.uvi}`);
+        let currentUVI = $("<p>").addClass("uvi").text(`UV Index: ${response.current.uvi}`);
 
         $("#currentWeather .card-body").append(currentDateTime, icon, current, currentHumidity, currentWind, currentUVI);
+
+        //UVI Colors
+        let uvIndex = response.current.uvi;
+        if (uvIndex <= 2){
+            currentUVI.css("background-color", "green");
+        } else if (uvIndex <= 5) {
+            currentUVI.css("background-color", "yellow");
+        } else if (uvIndex <=6) {
+            currentUVI.css("background-color", "orange");
+        } else {
+            currentUVI.css("background-color", "red");
+        }  
 
         //forecastOne
 
@@ -134,57 +174,9 @@ function oneCall(lat, lon) {
 
         $("#fiveDayForecast .card-body").append(forecastFive, iconFive, forecastFiveWeather, forecastFiveHumidity);
 
-
-
-
-
-
-
-
-
-
-
     });
     
 }
 
-
-//geoInfoCall();
-
-// function oneCall() {
-//     let lat = JSON.stringify($(".lat").val());
-//     console.log(lat);
-//     let lon = JSON.stringify($(".lon"));
-//     let queryURL =`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&
-//     exclude=currnet&appid=${APIKey}`;
-
-
-//     $.ajax({
-//         url: queryURL,
-//         method: "GET",
-//     }).then(function(response) {
-//         console.log(response);
-
-
-
-
-//     });
-    
-// }
-
-    //results display in currentweather div with city name, date, icon of weather cond, temp, humidity, wind spped, UV index
-
-    //display 5 days forecast for current city in fiveDayForecast
-
-
-
-
-
-
-
-
-
 //render search results - current and future conditions and add to history on the left panel
 //UX index needs to be displayed as button with color to show condition - green, orange and red levels
-//storage search history in local storage and pull it to display on the left panel
-//history will retrieve weather forecast on click
