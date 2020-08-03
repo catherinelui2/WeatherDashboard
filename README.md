@@ -4,7 +4,7 @@ Weather Dashboard for multiple cities
 
 # 06 Server-Side APIs: Weather Dashboard
 
-![Weather_Dashboard_Demo]()
+![Weather_Dashboard_Demo](https://catherinelui2.github.io/WeatherDashboard/Weather%20Dashboard.gif)
 
 
 
