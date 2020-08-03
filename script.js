@@ -19,8 +19,6 @@ $("document").ready(function () {
         e.preventDefault();
         let city = $("#cityInput").val();
         getForecastForCity(city);
-        $("#currentWeather").slideDown("slow");
-        $("#forecasts").slideDown("slow");
     });
 });
 
@@ -42,7 +40,9 @@ function renderCityList() {
 
 function getForecastForCity(city) {
     $("#errors").empty();
-    
+    $("#currentWeather").slideDown("slow");
+    $("#forecasts").slideDown("slow");
+
     $.ajax({
         url: `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${APIKey}`,
         method: "GET"
@@ -50,7 +50,6 @@ function getForecastForCity(city) {
     .then(function (response) {
         $("#cityInput").val("");
         $("#currentWeather .card-body").empty();
-
         let currentCity = response.city;
         let currentCityCoord = currentCity.coord;
 
