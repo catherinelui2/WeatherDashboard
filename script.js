@@ -111,8 +111,8 @@ function getDailyForecastForLocation(lat, lon) {
         const forecastCards = $("#forecastCards");
         forecastCards.empty();
         const dailyForecasts = response.daily;
-        const forecastCount = dailyForecasts.length < 5 ? dailyForecasts.length : 5;
-        for (let i = 0; i < forecastCount; i++) {
+        const forecastCount = dailyForecasts.length < 6 ? dailyForecasts.length : 6;
+        for (let i = 1; i < forecastCount; i++) {
             const dailyForecast = dailyForecasts[i];
             let forecastTimeStamp = moment.unix(dailyForecast.dt).format(timeFormat);
             let forecastWeatherIcon = dailyForecast.weather[0].icon;
