@@ -1,6 +1,5 @@
 //search bar to pull weather forecast from API
 const APIKey = "166a433c57516f51dfab1f7edaed8413";
-let cities = [];
 const savedCityStorageKey = "savedCities";
 let savedCities = JSON.parse(localStorage.getItem(savedCityStorageKey)) || [];
 
@@ -11,67 +10,75 @@ const updateStorage = () => {
 const timeFormat = "MMM Do YYYY";
 
 $("document").ready(function () {
+    if (savedCities.length > 0) {
+        renderCityList();
+        getForecastForCity(savedCities[savedCities.length - 1]);
+    }
+
     $("#searchBtn").on("click", function (e) {
         e.preventDefault();
         let city = $("#cityInput").val();
-        geoInfoCall(city);
+        getForecastForCity(city);
     });
 });
 
 function renderCityList() {
+    console.log("render city list: ", savedCities);
     const $cityList = $("#cityList .list-group");
     $cityList.empty();
-    for (let i = 0; i < cities.length; i++) {
-        let citybtn = $("<li>").addClass("btn btn-light border").text(cities[i]);
+
+    for (let i = 1, l = savedCities.length; i <= l; i++) {
+        let savedCity = savedCities[l - i];
+        let citybtn = $("<li>").addClass("btn btn-light border").text(savedCity);
         citybtn.on("click", function (e) {
             e.preventDefault();
-            geoInfoCall(cities[i]);
+            getForecastForCity(savedCity);
         });
-        $cityList.append(citybtn);
-        
+        $cityList.append(citybtn);   
     }
 }
 
-function geoInfoCall(city) {
-    $("#cityInput").val("");
+function getForecastForCity(city) {
     $("#errors").empty();
-    $("#currentWeather .card-body").empty();
     
-    let queryURL = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${APIKey}`;
-
     $.ajax({
-        url: queryURL,
-        method: "GET",
-    }).then(function (response) {
-        let lat = response.city.coord.lat;
-        let lon = response.city.coord.lon;
+        url: `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${APIKey}`,
+        method: "GET"
+    })
+    .then(function (response) {
+        $("#cityInput").val("");
+        $("#currentWeather .card-body").empty();
+
+        let currentCity = response.city;
+        let currentCityCoord = currentCity.coord;
+
         let h3 = $('<h3>').addClass('card-title').text(city);        
         $("#currentWeather .card-body").append(h3);
-        let cityName = response.city.name;
-        if (!cities.includes(cityName)) {
-            cities.push(cityName);
-            savedCities = cities;
-            updateStorage();
+        
+        let cityName = currentCity.name;
+        let cityNameIndex = savedCities.indexOf(cityName);
+        if (cityNameIndex !== -1) {
+            savedCities.splice(cityNameIndex, 1);
         }
+        savedCities.push(cityName);
+        updateStorage();
         
         renderCityList();
-        oneCall(lat,lon);
-    }).fail(function (jqXHR, textStatus, errorThrown) {
+        getDailyForecastForLocation(currentCityCoord.lat, currentCityCoord.lon);
+    })
+    .fail(function (jqXHR, textStatus, errorThrown) {
         let errorAlert = $("<div>").addClass("alert alert-danger").text(jqXHR.responseJSON.message);
 
         $("#errors").append(errorAlert);
     });
 }
 
-
-function oneCall(lat, lon) {
+function getDailyForecastForLocation(lat, lon) {
     // API Documentation https://openweathermap.org/api/one-call-api#example
-    let queryURL =`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&
-    exclude=currnet&units=imperial&appid=${APIKey}`;
-
     $.ajax({
-        url: queryURL,
-        method: "GET",
+        url: `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&
+        exclude=currnet&units=imperial&appid=${APIKey}`,
+        method: "GET"
     }).then(function(response) {
         let currentWeather = response.current;
         let currentDateTime = moment.unix(currentWeather.dt).format(timeFormat);
@@ -128,6 +135,3 @@ function oneCall(lat, lon) {
     });
     
 }
-
-//render search results - current and future conditions and add to history on the left panel
-//UX index needs to be displayed as button with color to show condition - green, orange and red levels
