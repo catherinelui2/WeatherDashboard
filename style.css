@@ -5,6 +5,11 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.uvi {
-    margin-right: 1128px;
+
+#currentWeather {
+    display: none;
+}
+
+#forecasts {
+    display: none;
 }

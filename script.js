@@ -19,6 +19,8 @@ $("document").ready(function () {
         e.preventDefault();
         let city = $("#cityInput").val();
         getForecastForCity(city);
+        $("#currentWeather").slideDown("slow");
+        $("#forecasts").slideDown("slow");
     });
 });
 
@@ -97,13 +99,13 @@ function getDailyForecastForLocation(lat, lon) {
         //UVI Colors
         let uvIndex = currentWeather.uvi;
         if (uvIndex <= 2){
-            currentUVI.css("background-color", "green");
+            currentUVI.css("color", "green");
         } else if (uvIndex <= 5) {
-            currentUVI.css("background-color", "yellow");
+            currentUVI.css("color", "yellow");
         } else if (uvIndex <=6) {
-            currentUVI.css("background-color", "orange");
+            currentUVI.css("color", "orange");
         } else {
-            currentUVI.css("background-color", "red");
+            currentUVI.css("color", "red");
         }  
 
         
