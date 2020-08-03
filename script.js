@@ -99,13 +99,11 @@ function getDailyForecastForLocation(lat, lon) {
         //UVI Colors
         let uvIndex = currentWeather.uvi;
         if (uvIndex <= 2){
-            currentUVI.css("color", "green");
-        } else if (uvIndex <= 5) {
-            currentUVI.css("color", "yellow");
+            currentUVI.toggleClass("badge badge-success");
         } else if (uvIndex <=6) {
-            currentUVI.css("color", "orange");
+            currentUVI.toggleClass("badge badge-warning");
         } else {
-            currentUVI.css("color", "red");
+            currentUVI.toggleClass("badge badge-danger");
         }  
 
         
